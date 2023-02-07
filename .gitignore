@@ -1,5 +1,6 @@
 .DS_Store
 .vs_code
+.vscode
 Debug
 release
 x64
@@ -7,6 +8,7 @@ x64
 build
 .DS_Store/*.*
 .vs_code/*.*
+.vscode/*.*
 Debug/*.*
 release/*.*
 x64/*.*

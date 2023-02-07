@@ -3,7 +3,8 @@
 This framework simulates the rendering process of the **Unity Engine**.
 
 This version is currently adapted to versions after OpenGL 3.3. If you need to adapt to previous versions, please overwrite all files in inside GL30.
-
+### Usage
+I added a very rough CMakeList.txt. Currently itr should be compatible with Windows and MacOS.
 ### Current features included
 - MemoryPool
   - TLSF algorithm is used for memory management. Please refer to **MemoryLabel.h** for different memory allocation.

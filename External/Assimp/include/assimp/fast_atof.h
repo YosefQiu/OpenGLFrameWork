@@ -146,6 +146,7 @@ uint8_t HexOctetToDecimal(const char* in) {
     return ((uint8_t)HexDigitToDecimal(in[0])<<4)+(uint8_t)HexDigitToDecimal(in[1]);
 }
 
+
 // ------------------------------------------------------------------------------------
 // signed variant of strtoul10
 // ------------------------------------------------------------------------------------
@@ -195,11 +196,11 @@ uint64_t strtoul10_64( const char* in, const char** out=0, unsigned int* max_ino
             break;
         }
 
-        const uint64_t new_value = ( value * (uint64_t) 10 ) + ( (uint64_t) ( *in - '0' ) );
+        const uint64_t new_value = ( value * 10 ) + ( *in - '0' );
 
         // numeric overflow, we rely on you
         if ( new_value < value ) {
-            ASSIMP_LOG_WARN_F( "Converting the string \"", in, "\" into a value resulted in overflow." );
+            DefaultLogger::get()->warn( std::string( "Converting the string \"" ) + in + "\" into a value resulted in overflow." );
             return 0;
         }
 
@@ -351,6 +352,7 @@ ai_real fast_atof(const char* c) {
 
     return ret;
 }
+
 
 inline
 ai_real fast_atof( const char* c, const char** cout) {

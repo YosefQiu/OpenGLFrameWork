@@ -13,8 +13,8 @@ public:
 	UniformUpdater* mUniforms;
 	std::unordered_map<std::string, MaterialProperty*> mProperties;
 	static std::unordered_map<std::string, Shader*> mCachedShaders;
-	static Shader* LoadShader(const char* name, const char* vs, const char* fs);
-	//void Init(const char* vs, const char* fs);
+	static std::unordered_map<std::string, Shader*> mBuiltShaders;
+	static Shader* LoadShader(const char* name, const char* vs, const char* fs, const char* gs = nullptr, const char* tcs = nullptr, const char* tes = nullptr);
 	void Init(const char* vertex_shader_file, const char* fragment_shader_file,
 		const char* geom_shader_file = nullptr,
 		const char* control_shader_file = nullptr, const char* evalua_shader_file = nullptr, bool bDebug = false);

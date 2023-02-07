@@ -19,7 +19,10 @@
 #include <cstdlib>
 #include <cstdarg>
 
+#ifdef _WIN32 || _WIN64
 #include <windows.h>
+#pragma comment( lib,"winmm.lib" )
+#endif
 
 #define DWORD unsigned int
 
@@ -33,12 +36,33 @@
 #include <math.h>
 #include <string.h>
 
-const std::string geomerty_path = "Res/Geometry";
-const std::string front_path = "Res/Fronts";
-const std::string hdr_path = "Res/HDR"; 
-const std::string models_path = "Res/Models"; 
-const std::string pic_path = "Res/Pics"; 
+#ifdef  _WIN32 || _WIN64
+#ifndef _CMAKE
+const std::string geomerty_path = "Res/Geometry/";
+const std::string front_path = "Res/Fronts/";
+const std::string hdr_path = "Res/HDR/"; 
+const std::string models_path = "Res/Models/"; 
+const std::string pic_path = "Res/Pics/"; 
 const std::string shader_path = "Res/Shaders/"; 
+#endif
+#ifdef  _CMAKE
+const std::string geomerty_path = "../Res/Geometry/";
+const std::string front_path = "../Res/Fronts/";
+const std::string hdr_path = "../Res/HDR/";
+const std::string models_path = "../Res/Models/";
+const std::string pic_path = "../Res/Pics/";
+const std::string shader_path = "../Res/Shaders/";
+#endif //  _CMAKE
+#endif 
+
+#ifdef __GNUC__
+const std::string geomerty_path = "../Res/Geometry/";
+const std::string front_path = "../Res/Fronts/";
+const std::string hdr_path = "../Res/HDR/";
+const std::string models_path = "../Res/Models/";
+const std::string pic_path = "../Res/Pics/";
+const std::string shader_path = "../Res/Shaders/";
+#endif // DEBUG
 
 const std::string ViewMatrix = "V";
 const std::string ProjMatrix = "P";
@@ -65,6 +89,12 @@ const std::string ATTR_TEXCOORD1 = "texcoord1";
 #else
 #define PLATFORMS "ENVIRONMENT32"
 #endif
+
+#define COMPILE "_clang__" 
+#if defined __clang_patchlevel__
+#define COMPILE_VERSION __clang_version__     
+#endif
+#define COMPILE_PLATFORMS PLATFORMS
 #endif
 
 #ifdef _MSC_VER

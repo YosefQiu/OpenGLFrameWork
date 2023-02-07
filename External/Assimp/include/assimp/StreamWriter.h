@@ -3,7 +3,7 @@
 Open Asset Import Library (assimp)
 ---------------------------------------------------------------------------
 
-Copyright (c) 2006-2019, assimp team
+Copyright (c) 2006-2018, assimp team
 
 
 
@@ -104,7 +104,7 @@ public:
 
     // ---------------------------------------------------------------------
     ~StreamWriter() {
-        stream->Write(buffer.data(), 1, buffer.size());
+        stream->Write(&buffer[0], 1, buffer.size());
         stream->Flush();
     }
 
@@ -114,7 +114,7 @@ public:
     /** Flush the contents of the internal buffer, and the output IOStream */
     void Flush()
     {
-        stream->Write(buffer.data(), 1, buffer.size());
+        stream->Write(&buffer[0], 1, buffer.size());
         stream->Flush();
         buffer.clear();
         cursor = 0;
@@ -204,12 +204,6 @@ public:
     }
 
     // ---------------------------------------------------------------------
-    /** Write a single character to the stream */
-    void PutChar(char c)    {
-        Put(c);
-    }
-
-    // ---------------------------------------------------------------------
     /** Write an aiString to the stream */
     void PutString(const aiString& s)
     {
@@ -254,6 +248,8 @@ public:
     void SetCurrentPos(std::size_t new_cursor) {
         cursor = new_cursor;
     }
+
+private:
 
     // ---------------------------------------------------------------------
     /** Generic write method. ByteSwap::Swap(T*) *must* be defined */

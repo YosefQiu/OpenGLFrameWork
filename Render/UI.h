@@ -22,7 +22,7 @@ public:
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
 		ImGuiIO& io = ImGui::GetIO(); (void)io;
-		io.Fonts->AddFontFromFileTTF("Res/Fronts/data-latin.ttf", 16.0f);
+		io.Fonts->AddFontFromFileTTF((front_path + "data-latin.ttf").c_str(), 16.0f);
 		// Set imgui style
 		ImGui::StyleColorsDark();
 		ImGui_ImplGlfw_InitForOpenGL(pWind, true);
@@ -36,7 +36,7 @@ public:
 
 		ImguiMenuBar();
 		ImguiOpenDlg();
-		//ImguiLightDlg();
+		ImguiConfigtDlg();
 		ImguiStatsDlg();
 		ImguiVersionDlg();
 	}
@@ -56,7 +56,7 @@ private:
 		{
 			if (ImGui::BeginMenu("Menu"))
 			{
-				ImGui::MenuItem("Light", NULL, &mbShowAppLight);
+				ImGui::MenuItem("Config", NULL, &mbShowAppConfig);
 				ImGui::MenuItem("Stats", NULL, &mbShowAppStats);
 
 				if (ImGui::MenuItem("Quit", "Alt+F4")) {
@@ -117,86 +117,61 @@ private:
 			ImGuiFileDialog::Instance()->Close();
 		}
 	}
-	void ImguiLightDlg() {
-		if (mbShowAppLight)
+	void ImguiConfigtDlg() {
+		if (mbShowAppConfig)
 		{
 			ImGui::SetNextWindowSize(ImVec2(345, 365), ImGuiCond_FirstUseEver);
 			ImGui::SetNextWindowPos(ImVec2(10, 275), ImGuiCond_FirstUseEver);
 
 			
-			ImGui::Begin("Light", &mbShowAppLight, ImGuiWindowFlags_None);
+			ImGui::Begin("Config", &mbShowAppConfig, ImGuiWindowFlags_None);
 			
-			if (ImGui::Button("LIGHT INFO...")) {
-				mbLightInfo = !mbLightInfo;
-			}
+			ImGui::Text("YELLOS ARROW: The direction of the total force");
+			ImGui::Text("GREEN ARROW: The direction of the velocity");
+			ImGui::Text("BLUE/RED ARROW: The size and direction of user exercion");
+			ImGui::Text(mCollisionINFO.c_str());
 
-			// Theory Light
-			if (ImGui::TreeNode("Theory Light..."))
+			// 2D Scene
+			if (ImGui::TreeNode("Particle System 2D Scene..."))
 			{
-				if (ImGui::RadioButton("Enable D", mbDlight))
-					mbDlight = !mbDlight;
+				if (ImGui::Button("Rest"))
+					mbSceneRest = true;
 				ImGui::SameLine();
-				ImGui::ColorEdit3("DLight Color", (float*)&mDirColor);
-				
-				if (ImGui::RadioButton("Enable P", mbPlight))
-					mbPlight = !mbPlight;
+				if (ImGui::Button("Concentric Circles"))
+					mbConcentricCircles = !mbConcentricCircles;
 				ImGui::SameLine();
-				ImGui::ColorEdit3("PLight Color", (float*)&mPointColor);
-				
-				if (ImGui::RadioButton("Enable S", mbSlight))
-					mbSlight = !mbSlight;
-				ImGui::SameLine();
-				ImGui::ColorEdit3("SLight Color", (float*)&mSpotColor);
-
+				if (ImGui::Button("Show Arrows"))
+					mbShowArrow = !mbShowArrow;
+				if (ImGui::RadioButton("Enable Gravity", mbGravity))
+					mbGravity = !mbGravity;
+				if (ImGui::RadioButton("Enable Air restitution", mbAirResistance))
+					mbAirResistance = !mbAirResistance;
+				ImGui::SliderFloat("OUTER CIRCLE", &m_outerCircle, 0.5, 0.90);
+				ImGui::SliderFloat("INNER CIRCLE", &m_innerCircle, 0.05, 0.65);
+				ImGui::SliderFloat("COEFFICIENT OF FRICTION", &m_coffOfFriction, 0.0, 1.0f);
+				ImGui::SliderFloat("COEFFICIENT OF RESTITUTION", &m_coffOfRestitution, 0.0, 1.0f);
+				ImGui::SliderFloat("COEFFICIENT OF AIR RESTITUTION", &m_coffOFAirResistance, 0.0, 1.0f);
 				ImGui::TreePop();
 				ImGui::Separator();
 			}
 			
-			// Area Light
-			if (ImGui::TreeNode("Area Light..."))
+			// 3D Scene
+			if (ImGui::TreeNode("Particle System 3D Scene..."))
 			{
-				ImGui::SetNextItemWidth(120);
-				if (ImGui::RadioButton("Enable R", mbRectAreaLight))
-					mbRectAreaLight = !mbRectAreaLight;
-				ImGui::SameLine();
-				ImGui::ColorEdit3("Rect Color", (float*)&mRectAreaColor);
-
-				if (ImGui::RadioButton("Enable C", mbCylinderAreaLight)) {
-					mbCylinderAreaLight = !mbCylinderAreaLight;
-					std::cout << mbCylinderAreaLight << std::endl;
-				}
-					
-				ImGui::SameLine();
-				ImGui::ColorEdit3("Cylinder Color", (float*)&mCylinderAreaColor);
-
-				if (ImGui::RadioButton("Enable S", mbSphereAreaLight))
-					mbSphereAreaLight = !mbSphereAreaLight;
-				ImGui::SameLine();
-				ImGui::ColorEdit3("Sphere Color", (float*)&mSphereAreaColor);
+				if (ImGui::Button("3D Scene"))
+					mbShow3DScene = !mbShow3DScene;
 				ImGui::TreePop();
 				ImGui::Separator();
 			}
 			
-			// Volumetric Light
-			if (ImGui::TreeNode("Volumetric Light..."))
-			{
-				ImGui::SliderFloat("expousre", &mExpousre, 0.0f, 2.0f);
-				ImGui::SliderFloat("decay", &mDecay, 0.95f, 1.05f);
-				ImGui::SliderFloat("density", &mDensity, 0.0f, 2.0f);
-				ImGui::SliderFloat("weight", &mWeight, 0.0f, 0.4f);
-				ImGui::SliderInt("samples", &mSamplers, 0, 100);
-				ImGui::TreePop();
-				ImGui::Separator();
-			}
-
-			// IBL
-			if (ImGui::TreeNode("Image Base on Light..."))
+			// Camera info
+			if (ImGui::TreeNode("Camera INFO..."))
 			{
 
 				ImGui::TreePop();
 				ImGui::Separator();
 			}
-			
+		
 			ImGui::End();
 		}
 	}
@@ -249,7 +224,7 @@ public:
 	GLFWwindow* pWind;
 	bool mbShowWindow;
 	bool mbShowAppStats = true;
-	bool mbShowAppLight = true;
+	bool mbShowAppConfig = true;
 	bool mbShowOpenDiag = true;
 	bool mbShowVersionInfo = false;
 public:
@@ -260,33 +235,22 @@ public:
 	bool mbFileFirst = true;
 	std::string mFilePath;
 public:
-	bool mbLightInfo = false;
 	//** ------------
-	//** Imgui Area Light parameters
+	//** Imgui Scene Config parameters
 	//** ------------
-	bool mbRectAreaLight = false;
-	bool mbCylinderAreaLight = false;
-	bool mbSphereAreaLight = false;
-	ImVec4 mRectAreaColor = ImVec4(0.0f, 0.34f, 0.57f, 1.0f);
-	ImVec4 mCylinderAreaColor = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
-	ImVec4 mSphereAreaColor = ImVec4(0.2f, 0.4f, 0.3f, 1.0f);
-	//** ------------
-	//** Imgui Theory Light parameters
-	//** ------------
-	ImVec4 mDirColor = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
-	ImVec4 mPointColor = ImVec4(0.0f, 0.4f, 0.0f, 1.0f);
-	ImVec4 mSpotColor = ImVec4(1.0f, 0.78f, 0.42f, 1.0f);
-	bool mbDlight = false;
-	bool mbSlight = true;
-	bool mbPlight = false;
-	//** ------------
-	//** Imgui Volumetric Light parameters
-	//** ------------
-	float mExpousre = 0.344f;
-	float mDecay = 0.968f;
-	float mDensity = 0.158f;
-	float mWeight = 0.081f;
-	int mSamplers = 100;
+	bool mbSceneRest = false;
+	bool mbConcentricCircles = false;
+	bool mbGravity = true;
+	bool mbAirResistance = true;
+	bool mbShowArrow = true;
+	bool mbShow3DScene = false;
+	float m_outerCircle = 0.9f;
+	float m_innerCircle = 0.55f;
+	float m_coffOfFriction = 0.1f;
+	float m_coffOfRestitution = 0.2f;
+	float m_coffOFAirResistance = 0.3f;
+	std::string mCollisionINFO = "There is no collision";
+
 public:
 	//** ------------
 	//** Stats parameters

@@ -1,2 +1,14 @@
-External/*.* 
-DS_Store
+.DS_Store
+.vs_code
+Debug
+release
+x64
+.vs
+build
+.DS_Store/*.*
+.vs_code/*.*
+Debug/*.*
+release/*.*
+x64/*.*
+.vs/*.*
+build/*.*

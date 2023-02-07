@@ -2,8 +2,9 @@
 #include "Utils/FileIO.h"
 #include "Utils/FixedStr.h"
 #include "VertexData.h"
-std::unordered_map<std::string,Shader*> Shader::mCachedShaders;
-Shader*Shader::LoadShader(const char *name, const char*vs, const char*fs)
+std::unordered_map<std::string,Shader*> Shader::mCachedShaders; 
+std::unordered_map<std::string, Shader*> Shader::mBuiltShaders;
+Shader*Shader::LoadShader(const char *name, const char*vs, const char*fs, const char* gs, const char* tcs, const char* tes)
 {
 	auto iter = mCachedShaders.find(name);
 	if (iter!=mCachedShaders.end())
@@ -11,36 +12,11 @@ Shader*Shader::LoadShader(const char *name, const char*vs, const char*fs)
 		return iter->second;
 	}
 	Shader*shader = new Shader;
-	shader->Init(vs, fs);
+	shader->Init(vs, fs, gs, tcs, tes);
 	mCachedShaders.insert(std::pair<std::string,Shader*>(name,shader));
 	return shader;
 }
-//void Shader::Init(const char*vs, const char*fs) 
-//{
-//	mAttributes = nullptr;
-//	mUniforms = nullptr;
-//	int nFileSize = 0;
-//	const char*vsCode = (char*)LoadFileContent(vs, nFileSize);
-//	const char*fsCode = (char*)LoadFileContent(fs, nFileSize);
-//	GLuint vsShader = CompileShader(GL_VERTEX_SHADER, vsCode);
-//	if (vsShader == 0) 
-//	{
-//		return;
-//	}
-//	GLuint fsShader = CompileShader(GL_FRAGMENT_SHADER, fsCode);
-//	if (fsShader == 0)
-//	{
-//		return;
-//	}
-//	mProgram = CreateProgram(vsShader, fsShader);
-//	glDeleteShader(vsShader);
-//	glDeleteShader(fsShader);
-//	if (mProgram != 0)
-//	{
-//		InitAttributes();
-//		InitUniforms();
-//	}
-//}
+
 
 void Shader::Init(const char* vertex_shader_file, const char* fragment_shader_file, const char* geom_shader_file, const char* control_shader_file, const char* evalua_shader_file, bool bDebug)
 {
@@ -91,6 +67,9 @@ void Shader::Init(const char* vertex_shader_file, const char* fragment_shader_fi
 
 void Shader::InitBuiltShader(const char* vsCode, const char* fsCode)
 {
+	mAttributes = nullptr;
+	mUniforms = nullptr;
+
 	GLuint vsShader = CompileShader(GL_VERTEX_SHADER, vsCode);
 	if (vsShader == 0) 
 	{
@@ -353,25 +332,6 @@ GLuint Shader::CompileShader(GLenum shaderType, const char* shaderCode) {
 	}
 	return shader;
 }
-//GLuint Shader::CreateProgram(GLuint vsShader, GLuint fsShader) {
-//	GLuint program = glCreateProgram();
-//	glAttachShader(program, vsShader);
-//	glAttachShader(program, fsShader);
-//	glLinkProgram(program);
-//	glDetachShader(program, vsShader);
-//	glDetachShader(program, fsShader);
-//	GLint nResult;
-//	glGetProgramiv(program, GL_LINK_STATUS, &nResult);
-//	if (nResult == GL_FALSE) {
-//		char log[1024] = { 0 };
-//		GLsizei writed = 0;
-//		glGetProgramInfoLog(program, 1024, &writed, log);
-//		printf("create gpu program fail,link error : %s\n", log);
-//		glDeleteProgram(program);
-//		program = 0;
-//	}
-//	return program;
-//}
 
 GLuint Shader::CreateProgram(unsigned int vsShader, unsigned int fsShader, unsigned int gShader, unsigned int cShader, unsigned int eShader) 
 {

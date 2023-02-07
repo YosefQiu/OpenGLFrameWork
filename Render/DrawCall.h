@@ -15,5 +15,5 @@ public:
 	VBO* mVBO;
 	EBO* mEBO;
 	DrawCall();
-	void Draw(Camera* camera);
+	void Draw(Camera* camera, GLenum polygon = GL_TRIANGLES);
 };

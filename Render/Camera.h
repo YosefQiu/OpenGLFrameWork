@@ -1,18 +1,17 @@
 #pragma once
 #include "YosefGL.h"
 #include "YosefPrefix.h"
-#pragma once
-#include "Camera.h"
+
 
 
 class Camera
 {
 public:
-    glm::vec3 mPosition;
-    glm::vec3 mTarget;
-    glm::vec3 mUp;
-    glm::mat4 mViewMatrix = glm::mat4(1.0f);
+    glm::vec3 mPosition = glm::vec3(1.0f);
+    glm::vec3 mTarget = glm::vec3(1.0f);
+    glm::vec3 mUp = glm::vec3(1.0f);
     glm::mat4 mProjectionMatrix = glm::mat4(1.0f);
+    glm::mat4 mViewMatrix = glm::mat4(1.0f);
     float mMoveSpeed;
     bool mbForward, mbBackward, mbLeft, mbRight, mbMouseLeft = false;
 public:
@@ -33,3 +32,4 @@ public:
     void SwitchTo2D(float width, float height);
     void SwitchTo3D(float width, float height);
 };
+

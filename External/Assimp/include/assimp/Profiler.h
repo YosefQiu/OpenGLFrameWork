@@ -2,7 +2,7 @@
 Open Asset Import Library (assimp)
 ----------------------------------------------------------------------
 
-Copyright (c) 2006-2019, assimp team
+Copyright (c) 2006-2018, assimp team
 
 
 All rights reserved.
@@ -72,7 +72,7 @@ public:
     /** Start a named timer */
     void BeginRegion(const std::string& region) {
         regions[region] = std::chrono::system_clock::now();
-        ASSIMP_LOG_DEBUG((format("START `"),region,"`"));
+        DefaultLogger::get()->debug((format("START `"),region,"`"));
     }
 
 
@@ -84,7 +84,7 @@ public:
         }
 
         std::chrono::duration<double> elapsedSeconds = std::chrono::system_clock::now() - regions[region];
-        ASSIMP_LOG_DEBUG((format("END   `"),region,"`, dt= ", elapsedSeconds.count()," s"));
+        DefaultLogger::get()->debug((format("END   `"),region,"`, dt= ", elapsedSeconds.count()," s"));
     }
 
 private:

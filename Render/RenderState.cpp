@@ -28,7 +28,9 @@ RenderState::RenderState() {
 	mAlphaTestAlphaValue=0.1f;
 	mDrawFace = GL_FRONT_AND_BACK;
 	mPolygonMode=GL_FILL;
-	mCurrentProgram=0;
+	mCurrentProgram = 0;
+	mTextureIndex = 0;
+	mPolygon = GL_TRIANGLES;
 }
 RenderState GlobalRenderState::mRenderState;
 void GlobalRenderState::Init() {
@@ -114,4 +116,22 @@ void GlobalRenderState::SetAlphaTest(unsigned int func, float ref_value) {
 		mRenderState.mAlphaTestAlphaValue = ref_value;
 		glAlphaFunc(mRenderState.mAlphaTestFunction, mRenderState.mAlphaTestAlphaValue);
 	}
+}
+
+void GlobalRenderState::SetPolygon(GLenum polygon)
+{
+	mRenderState.mPolygon = polygon;
+}
+void GlobalRenderState::EnableTextureUnit()
+{
+	if (mRenderState.mTextureIndex >= 15)
+		mRenderState.mTextureIndex = 0;
+	glActiveTexture(GL_TEXTURE0 + mRenderState.mTextureIndex++);
+}
+
+int GlobalRenderState::GetTextureUnit()
+{
+	int index = mRenderState.mTextureIndex;
+	index--;
+	return index;
 }

@@ -2,7 +2,7 @@
 Open Asset Import Library (assimp)
 ----------------------------------------------------------------------
 
-Copyright (c) 2006-2019, assimp team
+Copyright (c) 2006-2018, assimp team
 
 
 All rights reserved.
@@ -53,7 +53,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define INCLUDED_AI_STRING_WORKERS_H
 
 #include <assimp/ai_assert.h>
-#include <assimp/defs.h>
 #include "StringComparison.h"
 
 #include <string.h>
@@ -73,8 +72,8 @@ namespace Assimp    {
  * @param number Number to be written
  * @return Length of the output string, excluding the '\0'
  */
-AI_FORCE_INLINE
-unsigned int ASSIMP_itoa10( char* out, unsigned int max, int32_t number) {
+inline unsigned int ASSIMP_itoa10( char* out, unsigned int max, int32_t number)
+{
     ai_assert(NULL != out);
 
     // write the unary minus to indicate we have a negative number
@@ -92,7 +91,7 @@ unsigned int ASSIMP_itoa10( char* out, unsigned int max, int32_t number) {
 
         const unsigned int digit = number / cur;
         if (mustPrint || digit > 0 || 1 == cur) {
-            // print all future zeroe's from now
+            // print all future zeroes from now
             mustPrint = true;
 
             *out++ = '0'+static_cast<char>(digit);
@@ -117,8 +116,8 @@ unsigned int ASSIMP_itoa10( char* out, unsigned int max, int32_t number) {
  *  size of the array automatically.
  */
 template <size_t length>
-AI_FORCE_INLINE
-unsigned int ASSIMP_itoa10( char(& out)[length], int32_t number) {
+inline unsigned int ASSIMP_itoa10( char(& out)[length], int32_t number)
+{
     return ASSIMP_itoa10(out,length,number);
 }
 
@@ -133,10 +132,9 @@ unsigned int ASSIMP_itoa10( char(& out)[length], int32_t number) {
  *  @param s2 Second input string
  *  @return 0 if the given strings are identical
  */
-AI_FORCE_INLINE
-int ASSIMP_stricmp(const char *s1, const char *s2) {
-    ai_assert( NULL != s1 );
-    ai_assert( NULL != s2 );
+inline int ASSIMP_stricmp(const char *s1, const char *s2)
+{
+    ai_assert(NULL != s1 && NULL != s2);
 
 #if (defined _MSC_VER)
 
@@ -163,8 +161,8 @@ int ASSIMP_stricmp(const char *s1, const char *s2) {
  *  @param b Second string
  *  @return 0 if a == b
  */
-AI_FORCE_INLINE
-int ASSIMP_stricmp(const std::string& a, const std::string& b) {
+inline int ASSIMP_stricmp(const std::string& a, const std::string& b)
+{
     int i = (int)b.length()-(int)a.length();
     return (i ? i : ASSIMP_stricmp(a.c_str(),b.c_str()));
 }
@@ -181,13 +179,10 @@ int ASSIMP_stricmp(const std::string& a, const std::string& b) {
  *  @param n Macimum number of characters to compare
  *  @return 0 if the given strings are identical
  */
-AI_FORCE_INLINE
-int ASSIMP_strincmp(const char *s1, const char *s2, unsigned int n) {
-    ai_assert( NULL != s1 );
-    ai_assert( NULL != s2 );
-    if ( !n ) {
-        return 0;
-    }
+inline int ASSIMP_strincmp(const char *s1, const char *s2, unsigned int n)
+{
+    ai_assert(NULL != s1 && NULL != s2);
+    if (!n)return 0;
 
 #if (defined _MSC_VER)
 
@@ -218,16 +213,14 @@ int ASSIMP_strincmp(const char *s1, const char *s2, unsigned int n) {
  *
  * todo: move somewhere where it fits better in than here
  */
-AI_FORCE_INLINE
-unsigned int integer_pow( unsigned int base, unsigned int power ) {
+inline unsigned int integer_pow (unsigned int base, unsigned int power)
+{
     unsigned int res = 1;
-    for ( unsigned int i = 0; i < power; ++i ) {
+    for (unsigned int i = 0; i < power;++i)
         res *= base;
-    }
 
     return res;
 }
-
 } // end of namespace
 
 #endif // !  AI_STRINGCOMPARISON_H_INC

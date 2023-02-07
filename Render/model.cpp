@@ -1,9 +1,22 @@
 #include "model.h"
 #include "VertexData.h"
 #include "Utils/FileIO.h"
-Model::Model() {
+Model::Model() 
+{
+	mVAO = nullptr;
+	mVBO = nullptr;
+	mEBO = nullptr;
+	mMaterial = nullptr;
+	mDraw = nullptr;
 }
-void Model::Init(const char*modelPath) {
+
+Model::~Model()
+{
+	
+}
+
+void Model::Init(const char*modelPath) 
+{
 	struct FloatData {
 		float v[3];
 	};
@@ -88,7 +101,88 @@ void Model::Init(const char*modelPath) {
 		vertices[i].mNormal[1] = temp[1];
 		vertices[i].mNormal[2] = temp[2];
 		vertices[i].mNormal[3] = 0.0f;
+		temp = texcoords[vertexes[i].texcoordIndex - 1].v;
+		vertices[i].mTexCoord0[0] = temp[0];
+		vertices[i].mTexCoord0[1] = temp[1];
+		vertices[i].mTexCoord0[2] = temp[2];
+		vertices[i].mTexCoord0[3] = 0.0f;
+
+		if (vertices[i].mVertex.x < mMin.x)
+			mMin.x = vertices[i].mVertex.x;
+		if (vertices[i].mVertex.y < mMin.y)
+			mMin.y = vertices[i].mVertex.y;
+		if (vertices[i].mVertex.z < mMin.z)
+			mMin.z = vertices[i].mVertex.z;
+
+		if (vertices[i].mVertex.x > mMax.x)
+			mMax.x = vertices[i].mVertex.x;
+		if (vertices[i].mVertex.y > mMax.y)
+			mMax.y = vertices[i].mVertex.y;
+		if (vertices[i].mVertex.z > mMax.z)
+			mMax.z = vertices[i].mVertex.z;
 	}
 	mVertexCount = vertexCount;
 	mData = vertices;
+}
+
+void Model::ModelProcess(Shader* shader)
+{
+	mVAO = new VAO;
+	mVAO->Init();
+	mVBO = new VBO;
+	mVBO->SetSize(mVertexCount);
+	mVBO->SubmitData(mData, sizeof(VertexDataFull) * mVertexCount);
+
+	glm::vec3 max = glm::vec3(mMax.x, mMax.y, mMax.z);
+	glm::vec3 min = glm::vec3(mMin.x, mMin.y, mMin.z);
+
+	glm::vec3 center = (max + min) / 2.0f;
+	float dist = (max - min).z * 2.0f;
+	mCameraPos = glm::vec3(0, 0, dist);
+	mTargetPos = glm::vec3(center - mCameraPos);
+
+
+	mMaterial = new Material;
+	mMaterial->mBaseRenderPass = new RenderPass;
+	mMaterial->mBaseRenderPass->SetShader(shader);
+	
+	mDraw = new DrawCall;
+	mDraw->mVAO = mVAO;
+	mDraw->mVBO = mVBO;
+	mDraw->mMaterial = mMaterial;
+}
+void Model::SetMatrix4(const char* uniform_name, float* mat4, bool baseFlag)
+{
+	if (baseFlag)
+	{
+		if (mMaterial != nullptr && mMaterial->mBaseRenderPass)
+		{
+			mMaterial->mBaseRenderPass->SetMatrix4(uniform_name, mat4);
+		}
+	}
+	else
+	{
+		if (mMaterial != nullptr && mMaterial->mAdditiveRenderPass)
+		{
+			mMaterial->mAdditiveRenderPass->SetMatrix4(uniform_name, mat4);
+		}
+	}
+	
+}
+void Model::SetVec4(const char* uniform_name, float* vec4, bool baseFlag)
+{
+	if (baseFlag)
+	{
+		if (mMaterial != nullptr && mMaterial->mBaseRenderPass)
+		{
+			mMaterial->mBaseRenderPass->SetVec4(uniform_name, vec4);
+		}
+	}
+	else
+	{
+		if (mMaterial != nullptr && mMaterial->mAdditiveRenderPass)
+		{
+			mMaterial->mAdditiveRenderPass->SetVec4(uniform_name, vec4);
+		}
+	}
 }

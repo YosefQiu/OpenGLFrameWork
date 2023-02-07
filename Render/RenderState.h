@@ -16,6 +16,8 @@ struct RenderState
 	unsigned int mDrawFace;
 	unsigned int mPolygonMode;
 	unsigned int mCurrentProgram;
+	unsigned int mTextureIndex;
+	GLenum mPolygon;
 	RenderState();
 };
 class GlobalRenderState 
@@ -34,4 +36,7 @@ public:
 	static void SetCurrentProgram(unsigned int program);
 	static void SetPolygonMode(unsigned int face, unsigned int mode);
 	static void SetAlphaTest(unsigned int func, float ref_value);
+	static void SetPolygon(GLenum polygon);
+	static void EnableTextureUnit();
+	static int GetTextureUnit();
 };

@@ -62,3 +62,7 @@ struct VertexDataES30_Full
 };
 
 VertexDataFull* GetTriangle();
+
+#define VertexDataLength	sizeof(VertexDataFull)
+#define VertexData20Length  sizeof(VertexDataFull)
+#define VertexData30Length  sizeof(VertexDataFull)

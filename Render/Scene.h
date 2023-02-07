@@ -2,18 +2,21 @@
 
 #include "YosefPrefix.h"
 #include "YosefGL.h"
-
+#include "UI.h"
 class Scene
 {
 public:
 	Scene() {}
-	Scene(int w, int h) {}
+	Scene(int w, int h, UI* ui) : mW(w), mH(h), mUI(ui) {}
 	virtual ~Scene() {}
 public:
-	void Init();
-	void Init(int w, int h);
+	void Init(GLFWwindow* window);
+	void Init(int w, int h) {}
 	void SetViewPortSize(float width, float height);
 	void Render();
+public:
+	UI* mUI = nullptr;
+	int mW, mH;
 };
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);

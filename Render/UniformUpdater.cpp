@@ -1,5 +1,6 @@
 #include "UniformUpdater.h"
 #include "Camera.h"
+#include "RenderState.h"
 UniformUpdater::UniformUpdater(GLint location, UpdateUniformFunction f, MaterialProperty* target_property)
 {
 	mLocation = location;
@@ -62,12 +63,16 @@ void UniformUpdater::UpdateBool(GLint location, void* camera, void* property_val
 void UniformUpdater::UpdateSampler2D(GLint location, void* camera, void* property_value)
 {
 	MaterialPropertySampler2D* prop = (MaterialPropertySampler2D*)property_value;
-	glUniform1i(location, prop->mTextureName);
+	GlobalRenderState::EnableTextureUnit();
+	glBindTexture(GL_TEXTURE_2D, prop->mTextureName);
+	glUniform1i(location, GlobalRenderState::GetTextureUnit());
 }
 void UniformUpdater::UpdateSamplerCube(GLint location, void* camera, void* property_value)
 {
 	MaterialPropertySamplerCube* prop = (MaterialPropertySamplerCube*)property_value;
-	glUniform1i(location, prop->mTextureName);
+	GlobalRenderState::EnableTextureUnit();
+	glBindTexture(GL_TEXTURE_CUBE_MAP, prop->mTextureName);
+	glUniform1i(location, GlobalRenderState::GetTextureUnit());
 }
 UniformUpdater* UniformUpdater::Clone() 
 {

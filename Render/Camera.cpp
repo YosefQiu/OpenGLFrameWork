@@ -1,6 +1,4 @@
-#pragma once
 #include "Camera.h"
-
 
 Camera::Camera() 
 {
@@ -106,5 +104,5 @@ void Camera::SwitchTo2D(float width, float height)
 }
 void Camera::SwitchTo3D(float width, float height)
 {
-    mProjectionMatrix = glm::perspective(glm::radians(50.0f), (float)width / (float)height, 0.1f, 1000.0f);
+    mProjectionMatrix = glm::perspective(glm::radians(40.0f), (float)width / (float)height, 0.1f, 1000.0f);
 }

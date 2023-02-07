@@ -14,5 +14,6 @@ public:
 	RenderPass* mBaseRenderPass, * mAdditiveRenderPass;
 	void Bind(Camera* camera);
 	void SetMatrix4(const char* uniform_name, float* mat4);
+	void SetMatrix4(const char* uniform_name, glm::mat4 mat4) { SetMatrix4(uniform_name, glm::value_ptr(mat4)); }
 	void SetVec4(const char* uniform_name, float* ptr);
 };
